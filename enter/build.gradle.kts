@@ -5,18 +5,24 @@ plugins {
     alias(libs.plugins.ui.compose)
     alias(libs.plugins.kotlin.multiplatform)
 }
+
 @OptIn(org.jetbrains.kotlin.gradle.ExperimentalKotlinGradlePluginApi::class)
 kotlin {
-
     sourceSets {
+        val androidMain by getting
+        val iosMain by getting
+        val desktopMain by getting
+
         val commonMain by getting {
+//            kotlin.srcDir("build/generated/ksp/metadata/commonMain/kotlin")
             dependencies {
-                //put your multiplatform dependencies here
-            }
-        }
-        val commonTest by getting {
-            dependencies {
-                implementation(kotlin("test"))
+//                implementation(project(":ui:games"))
+//                implementation(project(":ui:details"))
+//                implementation(project(":data:games"))
+                implementation(libs.coroutines.core)
+                implementation(libs.kamel.image)
+                implementation(libs.bundles.di.kotlin)
+
             }
         }
     }
