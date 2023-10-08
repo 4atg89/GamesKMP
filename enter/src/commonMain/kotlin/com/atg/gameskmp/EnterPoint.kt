@@ -15,22 +15,24 @@ import moe.tlaster.precompose.navigation.transition.NavTransition
 
 @Composable
 fun Enter() {
-    Surface(
-        modifier = Modifier.fillMaxSize(),
-        color = MaterialTheme.colors.background
-    ) {
-
-        val navigator = rememberNavigator()
-        NavHost(
-            navigator = navigator,
-            navTransition = NavTransition(),
-            initialRoute = "/home"
+    MyApplicationTheme {
+        Surface(
+            modifier = Modifier.fillMaxSize(),
+            color = MaterialTheme.colors.background
         ) {
-            scene("/home", navTransition = NavTransition()) {
-                GamesList { navigator.navigate("/details/$it") }
-            }
-            scene("/details/{id}") { entry ->
-                GameDetails(entry.path<Int>("id")!!, navigator)
+
+            val navigator = rememberNavigator()
+            NavHost(
+                navigator = navigator,
+                navTransition = NavTransition(),
+                initialRoute = "/home"
+            ) {
+                scene("/home", navTransition = NavTransition()) {
+                    GamesList { navigator.navigate("/details/$it") }
+                }
+                scene("/details/{id}") { entry ->
+                    GameDetails(entry.path<Int>("id")!!, navigator)
+                }
             }
         }
     }

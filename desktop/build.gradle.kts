@@ -1,12 +1,13 @@
+@Suppress("DSL_SCOPE_VIOLATION")
 plugins {
     kotlin("jvm")
-    id("org.jetbrains.compose")
+    alias(libs.plugins.jetbrains.compose)
     application
 }
 
 dependencies {
     implementation(project(":enter"))
-    implementation("moe.tlaster:precompose:1.5.4")
+    implementation(libs.precompose.core)
     implementation(compose.desktop.currentOs)
     implementation(libs.bundles.di.kotlin)
 }

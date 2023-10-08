@@ -1,5 +1,6 @@
+@Suppress("DSL_SCOPE_VIOLATION")
 plugins {
-    id("com.android.application")
+    alias(libs.plugins.android.application)
     kotlin("android")
 }
 
@@ -40,12 +41,6 @@ android {
 
 dependencies {
     implementation(project(":enter"))
-    implementation("androidx.compose.ui:ui:1.4.3")
-    implementation("androidx.compose.ui:ui-tooling:1.4.3")
-    implementation("androidx.compose.ui:ui-tooling-preview:1.4.3")
-    implementation("androidx.compose.foundation:foundation:1.4.3")
-    implementation("androidx.compose.material:material:1.4.3")
-    implementation("androidx.activity:activity-compose:1.7.1")
-    implementation("moe.tlaster:precompose:1.5.4")
+    implementation(libs.precompose.core)
     implementation(libs.bundles.di)
 }

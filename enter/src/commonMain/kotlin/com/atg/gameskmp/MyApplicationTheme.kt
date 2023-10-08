@@ -1,4 +1,4 @@
-package com.atg.gameskmp.android
+package com.atg.gameskmp
 
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.shape.RoundedCornerShape
