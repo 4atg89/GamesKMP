@@ -35,3 +35,7 @@ rootProject.name = "GamesKMP"
 include(":androidApp")
 include(":desktop")
 include(":enter")
+include(":ui:games")
+include(":ui:details")
+include(":data:games")
+include(":data:network")
