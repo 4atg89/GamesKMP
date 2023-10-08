@@ -1,0 +1,77 @@
+[versions]
+#AGP
+androidGradlePlugin = "8.1.2"
+#KSP
+kspVersion = "1.9.10-1.0.13"
+#Kotlin
+kotlin = "1.9.10"
+#Coroutines
+coroutines = "1.7.3"
+#Serialization
+kserialization = "1.6.0"
+#Network
+ktor = "2.3.4"
+#Image
+kamel = "0.7.3"
+#Compose
+androidxComposeCompiler = "1.5.3"
+jetbrainsComposeVersion = "1.5.2"
+#Koin
+koinVersion = "3.5.0"
+koinComposeVersion = "1.1.0"
+koinAnnotationsVersion = "1.2.2"
+#Precompose
+precomposeVersion = "1.5.4"
+
+[libraries]
+#AGP
+android-tools-build-gradle-plugin = { group = "com.android.tools.build", name = "gradle", version.ref = "androidGradlePlugin" }
+#Kotlin GP
+kotlin-gradle-plugin = { group = "org.jetbrains.kotlin", name = "kotlin-gradle-plugin", version.ref = "kotlin" } #kotlin("gradle-plugin")
+#Coroutines
+coroutines-core = { group = "org.jetbrains.kotlinx", name = "kotlinx-coroutines-core", version.ref = "coroutines" }
+#Serialization
+kotlinx-serialization = { group = "org.jetbrains.kotlinx", name = "kotlinx-serialization-json", version.ref = "kserialization" }
+#Network
+ktor-core = { group = "io.ktor", name = "ktor-client-core", version.ref = "ktor" }
+ktor-logging = { group = "io.ktor", name = "ktor-client-logging", version.ref = "ktor" }
+ktor-kserialization = { group = "io.ktor", name = "ktor-serialization-kotlinx-json", version.ref = "ktor" }
+ktor-content-negotiation = { group = "io.ktor", name = "ktor-client-content-negotiation", version.ref = "ktor" }
+ktor-android = { group = "io.ktor", name = "ktor-client-okhttp", version.ref = "ktor" }
+ktor-desktop = { group = "io.ktor", name = "ktor-client-okhttp", version.ref = "ktor" }
+ktor-ios = { group = "io.ktor", name = "ktor-client-darwin", version.ref = "ktor" }
+#Image
+kamel-image = { group = "media.kamel", name = "kamel-image", version.ref = "kamel" }
+
+#DI - Koin
+di-koin-core = { group = "io.insert-koin", name = "koin-core", version.ref = "koinVersion" }
+di-koin-compose = { group = "io.insert-koin", name = "koin-compose", version.ref = "koinComposeVersion" }
+di-koin-android = { group = "io.insert-koin", name = "koin-android", version.ref = "koinVersion" }
+di-koin-android-compose = { group = "io.insert-koin", name = "koin-androidx-compose", version.ref = "koinVersion" }
+di-koin-annotations = { group = "io.insert-koin", name = "koin-annotations", version.ref = "koinAnnotationsVersion" }
+di-koin-ksp = { group = "io.insert-koin", name = "koin-ksp-compiler", version.ref = "koinAnnotationsVersion" }
+
+#Precompose
+precompose-core = { group = "moe.tlaster", name = "precompose", version.ref = "precomposeVersion" }
+precompose-core-viewmodel = { group = "moe.tlaster", name = "precompose-viewmodel", version.ref = "precomposeVersion" }
+precompose-core-koin = { group = "moe.tlaster", name = "precompose-koin", version.ref = "precomposeVersion" }
+
+[plugins]
+android-application = { id = "com.android.application", version.ref = "androidGradlePlugin" }
+android-library = { id = "com.android.library", version.ref = "androidGradlePlugin" }
+kotlin-android = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }
+google-ksp = { id = "com.google.devtools.ksp", version = "kspVersion" }
+jetbrains-compose = { id = "org.jetbrains.compose", version.ref = "jetbrainsComposeVersion" }
+jetbrains-multiplatform = { id = "org.jetbrains.kotlin.multiplatform", version.ref = "kotlin" }
+
+kotlin-jvm = { id = "org.jetbrains.kotlin.jvm", version.ref = "kotlin" } # kotlin("jvm")
+kotlinx-serialization-plugin = { id = "org.jetbrains.kotlin.plugin.serialization", version = "kotlin" } #kotlin("plugin.serialization")
+ui-compose = { id = "ui.compose", version = "unspecified" }
+kotlin-multiplatform = { id = "kotlin.multiplatform", version = "unspecified" }
+
+
+[bundles]
+network = ["ktor-core", "ktor-logging", "ktor-kserialization", "ktor-content-negotiation"]
+di = ["di-koin-core", "di-koin-android", "di-koin-android-compose", "di-koin-annotations"]
+di-kotlin = ["di-koin-core", "di-koin-compose", "di-koin-annotations"]
+precompose = ["precompose-core", "precompose-core-viewmodel", "precompose-core-koin"]
