@@ -16,6 +16,8 @@ kotlin {
         val commonMain by getting {
             kotlin.srcDir("build/generated/ksp/metadata/commonMain/kotlin")
             dependencies {
+                implementation(project(":core:common"))
+                implementation(project(":core:base"))
                 implementation(project(":ui:games"))
                 implementation(project(":ui:details"))
                 implementation(project(":data:games"))
@@ -29,6 +31,7 @@ kotlin {
 }
 
 dependencies {
+    implementation(project(mapOf("path" to ":core:base")))
     add("kspCommonMainMetadata", libs.di.koin.ksp)
 }
 

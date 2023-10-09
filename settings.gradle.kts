@@ -34,6 +34,8 @@ dependencyResolutionManagement {
 rootProject.name = "GamesKMP"
 include(":androidApp")
 include(":desktop")
+include(":core:base")
+include(":core:common")
 include(":enter")
 include(":ui:games")
 include(":ui:details")

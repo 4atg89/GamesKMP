@@ -4,13 +4,17 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Surface
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Modifier
+import com.atg.common.app.AppCompositeReducer
+import com.atg.common.app.AppStore
 import com.atg.details.GameDetails
 import com.atg.games.GamesList
 import moe.tlaster.precompose.navigation.NavHost
 import moe.tlaster.precompose.navigation.path
 import moe.tlaster.precompose.navigation.rememberNavigator
 import moe.tlaster.precompose.navigation.transition.NavTransition
+import org.koin.compose.getKoin
 
 
 @Composable
@@ -21,6 +25,11 @@ fun Enter() {
             color = MaterialTheme.colors.background
         ) {
 
+            val koin = getKoin()
+            LaunchedEffect(Unit ){
+                val store = koin.get<AppStore>()
+//                println("store = ${store::class}")
+            }
             val navigator = rememberNavigator()
             NavHost(
                 navigator = navigator,
