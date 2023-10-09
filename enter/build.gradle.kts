@@ -15,7 +15,10 @@ kotlin {
 
         val commonMain by getting {
             kotlin.srcDir("build/generated/ksp/metadata/commonMain/kotlin")
+            kotlin.srcDirs(file("$buildDir/generated/ksp/main/kotlin"),)
+
             dependencies {
+                implementation(project(":annotations"))
                 implementation(project(":core:common"))
                 implementation(project(":core:base"))
                 implementation(project(":ui:games"))
@@ -33,6 +36,7 @@ kotlin {
 dependencies {
     implementation(project(mapOf("path" to ":core:base")))
     add("kspCommonMainMetadata", libs.di.koin.ksp)
+    add("kspCommonMainMetadata", project(":ksp-common"))
 }
 
 tasks.withType<org.jetbrains.kotlin.gradle.dsl.KotlinCompile<*>>().configureEach {
