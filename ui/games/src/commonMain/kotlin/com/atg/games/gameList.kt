@@ -9,38 +9,38 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
-import androidx.compose.material.Button
-import androidx.compose.material.MaterialTheme
 import androidx.compose.material.OutlinedTextField
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
+import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.focus.onFocusChanged
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.text.TextRange
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.unit.dp
 import com.atg.games.model.ShortGame
 import io.kamel.image.KamelImage
 import io.kamel.image.asyncPainterResource
+import kotlinx.coroutines.flow.debounce
+import kotlinx.coroutines.flow.distinctUntilChanged
+import kotlinx.coroutines.flow.filter
+import kotlinx.coroutines.flow.launchIn
+import kotlinx.coroutines.flow.onEach
+import moe.tlaster.precompose.koin.koinViewModel
+import moe.tlaster.precompose.viewmodel.viewModel
+import org.koin.compose.getKoin
 import org.koin.mp.KoinPlatform
 
 
 @Composable
-fun GamesList(click: (Int) -> Unit) {
+fun GamesList(viewModel: GamesViewModel, click: (Int) -> Unit) {
     Column(
         Modifier.fillMaxWidth().background(Color.Transparent),
         horizontalAlignment = Alignment.CenterHorizontally,
     ) {
-        val props = remember { mutableStateListOf<ShortGame>() }
-
         val search = remember { mutableStateOf(TextFieldValue("")) }
 
         OutlinedTextField(
@@ -54,8 +54,9 @@ fun GamesList(click: (Int) -> Unit) {
 //                }
         )
 
+        val props = viewModel.props
         LazyColumn(modifier = Modifier.fillMaxWidth().fillMaxHeight(0.5f)) {
-            items(props, key = { it.id }) {
+            items((props.value), key = { it.id }) {
                 Column(modifier = Modifier.clickable { click.invoke(it.id) }) {
                     Text(text = it.title, modifier = Modifier)
                     KamelImage(
@@ -68,10 +69,14 @@ fun GamesList(click: (Int) -> Unit) {
 
             }
         }
-        val koin = KoinPlatform.getKoin()
-        LaunchedEffect(key1 = Unit) {
-            props.addAll(koin.get<GameRepository>().games())
+        LaunchedEffect(Unit) {
+            snapshotFlow { search.value }
+                .debounce(1500)
+                .distinctUntilChanged()
+                .onEach { viewModel.search(it.text) }
+                .launchIn(this)
         }
+        LaunchedEffect(key1 = Unit) { viewModel.loadGames() }
 
     }
 }

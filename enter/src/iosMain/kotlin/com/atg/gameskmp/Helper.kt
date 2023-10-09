@@ -13,8 +13,8 @@ class ClientHelper : KoinComponent {
 
 fun initKoin() {
     // start Koin
-    startKoin {
-        modules(appModule())
-    }
+//    startKoin {
+//        modules(appModule())
+//    }
 }
 //}

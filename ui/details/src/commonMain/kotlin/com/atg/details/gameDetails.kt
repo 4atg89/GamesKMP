@@ -19,7 +19,9 @@ import com.atg.games.model.Game
 import io.kamel.image.KamelImage
 import io.kamel.image.asyncPainterResource
 import moe.tlaster.precompose.navigation.Navigator
+import org.koin.compose.koinInject
 import org.koin.mp.KoinPlatform
+import org.koin.mp.KoinPlatform.getKoin
 
 @Composable
 fun GameDetails(id: Int, navigator: Navigator) {
@@ -42,9 +44,9 @@ fun GameDetails(id: Int, navigator: Navigator) {
             )
 
         }
-        val koin = KoinPlatform.getKoin()
+        val repo = koinInject<GameRepository>()
         LaunchedEffect(key1 = Unit) {
-            game.value = koin.get<GameRepository>().game(id)
+            game.value = repo.game(id)
         }
     }
 }

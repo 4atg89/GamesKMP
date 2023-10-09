@@ -10,15 +10,23 @@ import com.atg.common.app.AppCompositeReducer
 import com.atg.common.app.AppStore
 import com.atg.details.GameDetails
 import com.atg.games.GamesList
+import com.atg.games.GamesViewModel
+import com.atg.games.di.gameUiModule
+import moe.tlaster.precompose.koin.koinViewModel
 import moe.tlaster.precompose.navigation.NavHost
 import moe.tlaster.precompose.navigation.path
 import moe.tlaster.precompose.navigation.rememberNavigator
 import moe.tlaster.precompose.navigation.transition.NavTransition
+import org.koin.compose.KoinApplication
 import org.koin.compose.getKoin
+import org.koin.compose.module.rememberKoinModules
+import org.koin.core.annotation.KoinExperimentalAPI
 
 
+@OptIn(KoinExperimentalAPI::class)
 @Composable
 fun Enter() {
+    KoinApplication(application = { modules(appModule()) }) {
     MyApplicationTheme {
         Surface(
             modifier = Modifier.fillMaxSize(),
@@ -37,12 +45,15 @@ fun Enter() {
                 initialRoute = "/home"
             ) {
                 scene("/home", navTransition = NavTransition()) {
-                    GamesList { navigator.navigate("/details/$it") }
+                    rememberKoinModules { listOf(gameUiModule) }
+                    val viewModel = koinViewModel(GamesViewModel::class)
+                    GamesList(viewModel) { navigator.navigate("/details/$it") }
                 }
                 scene("/details/{id}") { entry ->
                     GameDetails(entry.path<Int>("id")!!, navigator)
                 }
             }
         }
+    }
     }
 }
