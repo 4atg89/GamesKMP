@@ -4,10 +4,9 @@ import kotlin.reflect.KClass
 
 @Target(AnnotationTarget.CLASS)
 @Retention(AnnotationRetention.RUNTIME)
-annotation class Feature(val feature: KClass<out Route>)
+annotation class Feature(val feature: KClass<out Action>)
 
-interface Route
 
-class BindFeature(val feature: KClass<out Route>) : Action
-class UnbindFeature(val feature: KClass<out Route>) : Action
+class BindFeature(val feature: KClass<out Action>) : Action
+class UnbindFeature(val feature: KClass<out Action>) : Action
 

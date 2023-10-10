@@ -1,5 +1,6 @@
 package com.atg.ksp
 
+import com.atg.annotations.ReduxFeature
 import com.google.devtools.ksp.processing.CodeGenerator
 import com.google.devtools.ksp.processing.KSPLogger
 import com.google.devtools.ksp.processing.SymbolProcessor
@@ -12,6 +13,7 @@ import com.google.devtools.ksp.symbol.*
 import com.google.devtools.ksp.symbol.Variance.*
 import com.google.devtools.ksp.validate
 import java.io.OutputStream
+import kotlin.reflect.KClass
 
 class ReduxProcessorProvider : SymbolProcessorProvider {
     override fun create(environment: SymbolProcessorEnvironment): SymbolProcessor = environment.run {
@@ -30,12 +32,8 @@ class ReduxProcessor(
 
     override fun process(resolver: Resolver): List<KSAnnotated> {
         val symbols = resolver
-            // Getting all symbols that are annotated with @Function.
-            .getSymbolsWithAnnotation("com.atg.annotations.EExample")
-            // Making sure we take only class declarations.
+            .getSymbolsWithAnnotation(ReduxFeature::class.java.name)
             .filterIsInstance<KSClassDeclaration>()
-
-        // Exit from the processor in case nothing is annotated with @Function.
         if (!symbols.iterator().hasNext()) return emptyList()
 
         // The generated file will be located at:
@@ -46,40 +44,38 @@ class ReduxProcessor(
             // https://kotlinlang.org/docs/ksp-incremental.html
             dependencies = Dependencies(false, *resolver.getAllFiles().toList().toTypedArray()),
             packageName = "com.atg.annotations",
-            fileName = "GeneratedFunctions"
+            fileName = "GeneratedReduxFeature"
         )
-        // Generating package statement.
         file += "package com.atg.annotations\n"
 
-        // Processing each class declaration, annotated with @Function.
         symbols.forEach { it.accept(Visitor(file), Unit) }
 
-        // Don't forget to close the out stream.
         file.close()
 
-        val unableToProcess = symbols.filterNot { it.validate() }.toList()
-        return unableToProcess
+        return symbols.filterNot { it.validate() }.toList()
     }
 
     inner class Visitor(private val file: OutputStream) : KSVisitorVoid() {
 
         override fun visitClassDeclaration(classDeclaration: KSClassDeclaration, data: Unit) {
-            if (classDeclaration.classKind != ClassKind.INTERFACE) {
-                logger.error("Only interface can be annotated with @Function", classDeclaration)
+            if (classDeclaration.classKind != ClassKind.CLASS && classDeclaration.classKind != ClassKind.INTERFACE) {
+                logger.error("Only interface and class can be annotated with @ReduxFeature ${classDeclaration.classKind}", classDeclaration)
                 return
             }
 
-            // Getting the @Function annotation object.
             val annotation: KSAnnotation = classDeclaration.annotations.first {
-                it.shortName.asString() == "EExample"
+                it.shortName.asString() == ReduxFeature::class.simpleName
             }
 
-            // Getting the 'name' argument object from the @Function.
+
+            val classArgument: KSValueArgument = annotation.arguments
+                .first { arg -> arg.name?.asString() == "clazz" }
             val nameArgument: KSValueArgument = annotation.arguments
                 .first { arg -> arg.name?.asString() == "name" }
-
             // Getting the value of the 'name' argument.
+            val functionClass = classArgument.value as KSType
             val functionName = nameArgument.value as String
+            logger.warn("visitClassDeclaration ${ functionClass}", classDeclaration)
 
             // Getting the list of member properties of the annotated interface.
             val properties: Sequence<KSPropertyDeclaration> = classDeclaration.getAllProperties()
@@ -87,7 +83,10 @@ class ReduxProcessor(
 
             // Generating function signature.
             file += "\n"
+//            file += "import ${functionClass.arguments}.${functionClass}"
+            file += "\n"
             if (properties.iterator().hasNext()) {
+//                file += "fun ${functionClass}.$functionName(\n"
                 file += "fun $functionName(\n"
 
                 // Iterating through each property to translate them to function arguments.
@@ -98,11 +97,12 @@ class ReduxProcessor(
 
             } else {
                 // Otherwise, generating function with no args.
+//                file += "fun ${functionClass}.$functionName() {\n"
                 file += "fun $functionName() {\n"
             }
 
             // Generating function body.
-            file += "    println(\"Hello from $functionName\")\n"
+            file += "    println(\"Hello from $functionClass.$functionName\")\n"
             file += "}\n"
         }
 

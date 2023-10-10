@@ -6,7 +6,8 @@ import androidx.compose.material.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Modifier
-import com.atg.common.app.AppCompositeReducer
+import com.atg.annotations.ReduxFeature
+import com.atg.common.Action
 import com.atg.common.app.AppStore
 import com.atg.details.GameDetails
 import com.atg.games.GamesList
@@ -55,5 +56,29 @@ fun Enter() {
             }
         }
     }
+        val actionInterface1 = SealedInterface.SealedInterfaceClass(1)
+        val actionInterface2 = SealedInterface.SealedInterfaceObj
+        val actionClass1 = SealedClass.SealedClassClass(1)
+        val actionClass2 = SealedClass.SealedClassObj
+        val list = listOf(actionInterface1, actionInterface2, actionClass1, actionClass2)
+        list.forEach {
+           val item = it::class.qualifiedName?.substringBeforeLast(".")
+            println("Enter -> $item")
+        }
+//        HiFromHere20()
     }
+}
+
+//@ReduxFeature("HiFromHere20")
+//interface Bla
+@ReduxFeature(GamesViewModel::class, "GamesViewModelInterface")
+sealed interface SealedInterface : Action {
+
+    class SealedInterfaceClass(val id: Int): SealedInterface
+    data object SealedInterfaceObj: SealedInterface
+}
+@ReduxFeature(GamesViewModel::class, "GamesViewModelClass")
+sealed class SealedClass : Action {
+    class SealedClassClass(val id: Int): SealedClass()
+    data object SealedClassObj: SealedClass()
 }
