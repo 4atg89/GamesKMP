@@ -26,11 +26,16 @@ class GamesMiddleware(
 
     override fun dispatch(action: Action, store: TheStore, next: NextDispatcher): Action = when (action) {
         is GamesAction.LoadAction -> next.dispatch(action.fetchGames(store), store)
+        is GamesAction.OpenGameAction -> next.dispatch(action.openGame(store), store)
         else -> next.dispatch(action, store)
     }
 
     private fun GamesAction.LoadAction.fetchGames(store: Store<Action, AppState>) = apply {
         scope.launch { store.dispatch(GamesAction.LoadedAction(repository.games())) }
             .invokeOnCompletion { it?.let { } }
+    }
+
+    private fun GamesAction.OpenGameAction.openGame(store: Store<Action, AppState>) = apply {
+        store.dispatch(GamesAction.OpenGameCommand(id))
     }
 }

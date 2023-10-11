@@ -13,6 +13,7 @@ import com.atg.details.GameDetails
 import com.atg.games.GamesList
 import com.atg.games.GamesViewModel
 import com.atg.games.di.gameUiModule
+import com.atg.games.redux.GamesAction
 import moe.tlaster.precompose.koin.koinViewModel
 import moe.tlaster.precompose.navigation.NavHost
 import moe.tlaster.precompose.navigation.path
@@ -28,44 +29,43 @@ import org.koin.core.annotation.KoinExperimentalAPI
 @Composable
 fun Enter() {
     KoinApplication(application = { modules(appModule()) }) {
-    MyApplicationTheme {
-        Surface(
-            modifier = Modifier.fillMaxSize(),
-            color = MaterialTheme.colors.background
-        ) {
-
-            val koin = getKoin()
-            LaunchedEffect(Unit ){
-                val store = koin.get<AppStore>()
-//                println("store = ${store::class}")
-            }
-            val navigator = rememberNavigator()
-            NavHost(
-                navigator = navigator,
-                navTransition = NavTransition(),
-                initialRoute = "/home"
+        MyApplicationTheme {
+            Surface(
+                modifier = Modifier.fillMaxSize(),
+                color = MaterialTheme.colors.background
             ) {
-                scene("/home", navTransition = NavTransition()) {
-                    rememberKoinModules { listOf(gameUiModule) }
-                    val viewModel = koinViewModel(GamesViewModel::class)
-                    GamesList(viewModel) { navigator.navigate("/details/$it") }
+
+                val koin = getKoin()
+                LaunchedEffect(Unit) {
+                    val store = koin.get<AppStore>()
+//                println("store = ${store::class}")
                 }
-                scene("/details/{id}") { entry ->
-                    GameDetails(entry.path<Int>("id")!!, navigator)
+                val navigator = rememberNavigator()
+                NavHost(
+                    navigator = navigator,
+                    navTransition = NavTransition(),
+                    initialRoute = "/home"
+                ) {
+                    scene("/home", navTransition = NavTransition()) {
+                        rememberKoinModules { listOf(gameUiModule) }
+                        val viewModel = koinViewModel(GamesViewModel::class)
+                        val commandProps = viewModel.gamesCommandProps.value
+                        GamesList(viewModel)
+                        LaunchedEffect(commandProps) {
+                            val destination = commandProps.sideEffect ?: return@LaunchedEffect
+                            when (val effect = destination.sideEffect) {
+                                is GamesAction.OpenGameCommand -> navigator.navigate("/details/${effect.id}")
+                                else -> Unit
+                            }
+                            destination.consumed.invoke()
+                        }
+                    }
+                    scene("/details/{id}") { entry ->
+                        GameDetails(entry.path<Int>("id")!!, navigator)
+                    }
                 }
             }
         }
-    }
-        val actionInterface1 = SealedInterface.SealedInterfaceClass(1)
-        val actionInterface2 = SealedInterface.SealedInterfaceObj
-        val actionClass1 = SealedClass.SealedClassClass(1)
-        val actionClass2 = SealedClass.SealedClassObj
-        val list = listOf(actionInterface1, actionInterface2, actionClass1, actionClass2)
-        list.forEach {
-           val item = it::class.qualifiedName?.substringBeforeLast(".")
-            println("Enter -> $item")
-        }
-//        HiFromHere20()
     }
 }
 
@@ -74,11 +74,12 @@ fun Enter() {
 @ReduxFeature(GamesViewModel::class, "GamesViewModelInterface")
 sealed interface SealedInterface : Action {
 
-    class SealedInterfaceClass(val id: Int): SealedInterface
-    data object SealedInterfaceObj: SealedInterface
+    class SealedInterfaceClass(val id: Int) : SealedInterface
+    data object SealedInterfaceObj : SealedInterface
 }
+
 @ReduxFeature(GamesViewModel::class, "GamesViewModelClass")
 sealed class SealedClass : Action {
-    class SealedClassClass(val id: Int): SealedClass()
-    data object SealedClassObj: SealedClass()
+    class SealedClassClass(val id: Int) : SealedClass()
+    data object SealedClassObj : SealedClass()
 }

@@ -34,9 +34,8 @@ import moe.tlaster.precompose.viewmodel.viewModel
 import org.koin.compose.getKoin
 import org.koin.mp.KoinPlatform
 
-
 @Composable
-fun GamesList(viewModel: GamesViewModel, click: (Int) -> Unit) {
+fun GamesList(viewModel: GamesViewModel) {
     Column(
         Modifier.fillMaxWidth().background(Color.Transparent),
         horizontalAlignment = Alignment.CenterHorizontally,
@@ -47,26 +46,12 @@ fun GamesList(viewModel: GamesViewModel, click: (Int) -> Unit) {
             value = search.value,
             onValueChange = { text -> search.value = text },
             modifier = Modifier.fillMaxWidth().height(64.dp)
-//                .onFocusChanged { focusState ->
-//                    if (focusState.isFocused)
-//                        search.value =
-//                            search.value.copy(selection = TextRange(0, search.value.text.length))
-//                }
         )
 
         val props = viewModel.gamesProps
-        LazyColumn(modifier = Modifier.fillMaxWidth().fillMaxHeight(0.5f)) {
+        LazyColumn(modifier = Modifier.fillMaxWidth().fillMaxHeight()) {
             items((props.value.games), key = { it.id }) {
-                Column(modifier = Modifier.clickable { click.invoke(it.id) }) {
-                    Text(text = it.title, modifier = Modifier)
-                    KamelImage(
-                        modifier = Modifier.fillMaxSize(100f),
-                        resource = asyncPainterResource(data = it.thumbnail),
-                        contentDescription = it.title,
-                    )
-
-                }
-
+                GameCard(it) { game -> props.value.openGameCommand.invoke(game.id) }
             }
         }
         LaunchedEffect(Unit) {
@@ -76,6 +61,18 @@ fun GamesList(viewModel: GamesViewModel, click: (Int) -> Unit) {
                 .onEach { viewModel.search(it.text) }
                 .launchIn(this)
         }
+    }
+}
+
+@Composable
+private fun GameCard(game: ShortGame, click: (ShortGame) -> Unit) {
+    Column(modifier = Modifier.clickable { click.invoke(game) }) {
+        Text(text = game.title, modifier = Modifier)
+        KamelImage(
+            modifier = Modifier.fillMaxSize(100f),
+            resource = asyncPainterResource(data = game.thumbnail),
+            contentDescription = game.title,
+        )
 
     }
 }

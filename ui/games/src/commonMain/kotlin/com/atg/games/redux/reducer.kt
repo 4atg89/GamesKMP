@@ -8,6 +8,7 @@ import com.atg.common.subState
 class GamesReducer: Reducer<Action, AppState> {
     override fun reduce(action: Action, state: AppState) = when (action) {
         is GamesAction.LoadedAction -> action.reduce(state)
+        is GamesAction.OpenGameCommand -> action.reduce(state)
         else -> state
     }
 
@@ -17,4 +18,7 @@ class GamesReducer: Reducer<Action, AppState> {
         val states = state.states - oldSubState + newSubState
         return state.copy(states = states)
     }
+
+    private fun GamesAction.OpenGameCommand.reduce(state: AppState): AppState =
+        state.copy(sideEffect = state.sideEffect + this)
 }
