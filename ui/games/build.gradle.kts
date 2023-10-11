@@ -2,6 +2,7 @@
 plugins {
     alias(libs.plugins.android.library)
     alias(libs.plugins.ui.compose)
+    alias(libs.plugins.ui.setup)
     alias(libs.plugins.kotlin.multiplatform)
 }
 

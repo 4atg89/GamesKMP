@@ -3,6 +3,7 @@ plugins {
     alias(libs.plugins.google.ksp) version libs.versions.kspVersion
     alias(libs.plugins.android.library)
     alias(libs.plugins.ui.compose)
+    alias(libs.plugins.ui.setup)
     alias(libs.plugins.kotlin.multiplatform)
 }
 
@@ -19,8 +20,6 @@ kotlin {
 
             dependencies {
                 implementation(project(":annotations"))
-                implementation(project(":core:common"))
-                implementation(project(":core:base"))
                 implementation(project(":ui:games"))
                 implementation(project(":ui:details"))
                 implementation(project(":data:games"))
@@ -34,7 +33,7 @@ kotlin {
 }
 
 dependencies {
-    implementation(project(mapOf("path" to ":core:base")))
+//    implementation(project(mapOf("path" to ":core:base")))
     add("kspCommonMainMetadata", libs.di.koin.ksp)
     add("kspCommonMainMetadata", project(":ksp-common"))
 }

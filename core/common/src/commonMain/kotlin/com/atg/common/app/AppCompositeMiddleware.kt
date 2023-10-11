@@ -40,10 +40,10 @@ private class DispatcherHolder(private val middlewareFactory: AppMiddlewareFacto
     }
 
     fun bind(action: BindFeature, next: Dispatcher<Action, Store<Action, AppState>>) =
-        nodes.getOrPut(action.feature::class.qualifiedName!!) { action.mapFeature(next) }
+        nodes.getOrPut(action.feature.qualifiedName!!) { action.mapFeature(next) }
 
     private fun BindFeature.mapFeature(next: Dispatcher<Action, Store<Action, AppState>>): Dispatcher<Action, Store<Action, AppState>> {
-        val middlewares = middlewareFactory.createForFeature(feature::class.qualifiedName!!)
+        val middlewares = middlewareFactory.createForFeature(feature.qualifiedName!!)
         if (middlewares.isEmpty()) return AppDispatcherNode({ action, store, nextD -> nextD.dispatch(action, store) }, next)
         val operation: FoldOperation = { index, middleware, node -> if (index == middlewares.lastIndex) node else AppDispatcherNode(middleware, node) }
         return middlewares.foldRightIndexed(AppDispatcherNode(middlewares.last(), next), operation)

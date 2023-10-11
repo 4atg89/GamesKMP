@@ -68,6 +68,7 @@ kotlin-jvm = { id = "org.jetbrains.kotlin.jvm", version.ref = "kotlin" } # kotli
 kotlinx-serialization-plugin = { id = "org.jetbrains.kotlin.plugin.serialization", version = "kotlin" } #kotlin("plugin.serialization")
 ui-compose = { id = "ui.compose", version = "unspecified" }
 kotlin-multiplatform = { id = "kotlin.multiplatform", version = "unspecified" }
+ui-setup = { id = "ui.setup", version = "unspecified" }
 
 
 [bundles]

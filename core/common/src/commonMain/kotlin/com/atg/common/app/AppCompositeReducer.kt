@@ -45,13 +45,13 @@ private class ReducerHolder(private val reducerFactory: AppReducerFactory<Action
     }
 
     fun bind(action: BindFeature) {
-        val feature = action::class.qualifiedName!!
+        val feature = action.feature.qualifiedName!!
         val counter = nodeCounter[feature] ?: 0
-        nodes.getOrPut(feature) { reducerFactory.createForFeature(action.feature::class.qualifiedName!!) }
+        nodes.getOrPut(feature) { reducerFactory.createForFeature(action.feature.qualifiedName!!) }
         nodeCounter[feature] = counter.inc()
     }
     fun unbind(action: UnbindFeature) {
-        val feature = action::class.qualifiedName!!
+        val feature = action.feature.qualifiedName!!
         val counter = nodeCounter[feature]?.dec() ?: throw IllegalStateException("there was no any bind for $action before unbind")
         if (counter == 0) {
             nodes.remove(feature)

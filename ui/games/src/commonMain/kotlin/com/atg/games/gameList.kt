@@ -54,9 +54,9 @@ fun GamesList(viewModel: GamesViewModel, click: (Int) -> Unit) {
 //                }
         )
 
-        val props = viewModel.props
+        val props = viewModel.gamesProps
         LazyColumn(modifier = Modifier.fillMaxWidth().fillMaxHeight(0.5f)) {
-            items((props.value), key = { it.id }) {
+            items((props.value.games), key = { it.id }) {
                 Column(modifier = Modifier.clickable { click.invoke(it.id) }) {
                     Text(text = it.title, modifier = Modifier)
                     KamelImage(
@@ -76,7 +76,6 @@ fun GamesList(viewModel: GamesViewModel, click: (Int) -> Unit) {
                 .onEach { viewModel.search(it.text) }
                 .launchIn(this)
         }
-        LaunchedEffect(key1 = Unit) { viewModel.loadGames() }
 
     }
 }

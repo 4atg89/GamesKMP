@@ -30,6 +30,11 @@ gradlePlugin {
             implementationClass = "ComposeConventionPlugin"
         }
 
+        register("uiSetup") {
+            id = "ui.setup"
+            implementationClass = "UIConventionPlugin"
+        }
+
         register("kotlinMultiplatform") {
             id = "kotlin.multiplatform"
             implementationClass = "MultiplatformSetupConventionPlugin"

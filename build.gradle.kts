@@ -19,6 +19,7 @@ plugins {
     alias(libs.plugins.google.ksp) version libs.versions.kspVersion
     alias(libs.plugins.ui.compose).apply(false)
     alias(libs.plugins.kotlin.multiplatform).apply(false)
+    alias(libs.plugins.ui.setup).apply(false)
 }
 
 subprojects {

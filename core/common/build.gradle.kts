@@ -14,7 +14,6 @@ kotlin {
         val commonMain by getting {
             dependencies {
                 implementation(libs.coroutines.core)
-                implementation(kotlin("reflect"))
             }
         }
     }
